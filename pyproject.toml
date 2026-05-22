@@ -1,0 +1,9 @@
+[project]
+name = "graphrag-minus-1"
+version = "0.0.1"
+description = "The world's most naive GraphRAG implementation"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]

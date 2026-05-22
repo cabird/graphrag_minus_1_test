@@ -1,0 +1,7 @@
+Metadata-Version: 2.4
+Name: graphrag-minus-1
+Version: 0.0.1
+Summary: The world's most naive GraphRAG implementation
+Requires-Python: >=3.10
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"

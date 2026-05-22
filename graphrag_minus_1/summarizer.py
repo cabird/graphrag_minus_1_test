@@ -65,7 +65,10 @@ class Summarizer:
         entities_used = []
 
         for result in results[:5]:
-            neighbor_text = ", ".join(result.context[:3]) if result.context else "no connections"
+            neighbor_text = "no connections"
+            if result.context:
+                neighbor_text = ", ".join(result.context[:3])
+            
             parts.append(f"{result.entity} (related to: {neighbor_text})")
             entities_used.append(result.entity)
 
@@ -74,12 +77,14 @@ class Summarizer:
         if len(full_text) > self.max_length:
             full_text = full_text[:self.max_length - 3] + "..."
 
-        avg_score = sum(r.score for r in results[:5]) / min(len(results), 5)
+        result_count = min(len(results), 5)
+        avg_score = sum(r.score for r in results[:5]) / result_count
+        confidence = min(avg_score * 1.5, 0.99)
 
         return Summary(
             text=full_text,
             source_entities=entities_used,
-            confidence=min(avg_score * 1.5, 0.99),  # inflate slightly, cap at 0.99
+            confidence=confidence,
             method="concatenate",
         )
 
@@ -87,11 +92,12 @@ class Summarizer:
         """Top entities strategy: just list the entity names. Minimalist."""
         entities = [r.entity for r in results[:5]]
         text = f"Key concepts for '{query}': {', '.join(entities)}"
+        confidence = results[0].score if results else 0.0
 
         return Summary(
             text=text[:self.max_length],
             source_entities=entities,
-            confidence=results[0].score if results else 0.0,
+            confidence=confidence,
             method="top_entities",
         )
 

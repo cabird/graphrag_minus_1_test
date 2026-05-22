@@ -27,9 +27,12 @@ class Community:
         """Generate a community summary. Uses first 3 members as the label."""
         if not self.members:
             return "Empty community"
+        
         preview = ", ".join(self.members[:3])
-        suffix = f" (+{len(self.members) - 3} more)" if len(self.members) > 3 else ""
-        return f"{preview}{suffix}"
+        if len(self.members) > 3:
+            additional_count = len(self.members) - 3
+            return f"{preview} (+{additional_count} more)"
+        return preview
 
 
 class CommunityDetector:
@@ -126,10 +129,18 @@ class CommunityDetector:
     @property
     def stats(self) -> dict:
         """Return community detection statistics."""
-        sizes = [c.size for c in self._communities] if self._communities else [0]
+        if not self._communities:
+            return {
+                "communities_found": 0,
+                "avg_community_size": 0,
+                "largest_community": 0,
+                "smallest_community": 0,
+            }
+        
+        sizes = [c.size for c in self._communities]
         return {
             "communities_found": len(self._communities),
-            "avg_community_size": sum(sizes) / max(len(sizes), 1),
+            "avg_community_size": sum(sizes) / len(sizes),
             "largest_community": max(sizes),
             "smallest_community": min(sizes),
         }

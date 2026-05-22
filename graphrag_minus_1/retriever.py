@@ -123,8 +123,9 @@ class NaiveRetriever:
 
     def _keyword_score(self, query_terms: set[str], entity: str) -> float:
         """Score based on keyword overlap. Revolutionary stuff."""
-        entity_terms = set(entity.lower().split())
         if not query_terms:
             return 0.0
+        
+        entity_terms = set(entity.lower().split())
         overlap = query_terms & entity_terms
         return len(overlap) / len(query_terms)

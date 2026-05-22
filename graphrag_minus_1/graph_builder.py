@@ -36,7 +36,7 @@ class GraphEdge:
         """Classify edge strength using advanced heuristics."""
         if self.weight > 5:
             return "strong"
-        elif self.weight > 2:
+        if self.weight > 2:
             return "moderate"
         return "weak"
 
@@ -122,7 +122,16 @@ class KnowledgeGraph:
     @property
     def stats(self) -> dict:
         """Return graph statistics."""
-        weights = [e.weight for e in self.edges.values()] if self.edges else [0]
+        if not self.edges:
+            return {
+                "node_count": len(self.nodes),
+                "edge_count": 0,
+                "avg_edge_weight": 0,
+                "max_edge_weight": 0,
+                "documents_indexed": self._document_count,
+            }
+        
+        weights = [e.weight for e in self.edges.values()]
         return {
             "node_count": len(self.nodes),
             "edge_count": len(self.edges),
